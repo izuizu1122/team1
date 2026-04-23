@@ -19,7 +19,7 @@
         <div class="edit-box">
             <h2 id="pageTitle">食材を追加</h2>
 
-            <form id="ingredientForm" class="ingredient-form">
+            <form id="ingredientForm" class="ingredient-form" enctype="multipart/form-data">
                 <!-- 食材名 -->
                 <div class="form-group">
                     <label for="ingredientName">食材名 <span class="required">*</span></label>
@@ -90,6 +90,23 @@
                         <option value="調味料">調味料</option>
                         <option value="その他">その他</option>
                     </select>
+                </div>
+
+                <!-- 写真アップロード -->
+                <div class="form-group">
+                    <label for="photo">写真</label>
+                    <div class="photo-upload">
+                        <input 
+                            type="file" 
+                            id="photo" 
+                            name="photo" 
+                            accept="image/*"
+                        >
+                        <div id="photoPreview" class="photo-preview" style="display:none;">
+                            <img id="previewImage" src="" alt="プレビュー">
+                            <button type="button" class="btn-remove-photo" id="removePhotoBtn">削除</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- メモ -->

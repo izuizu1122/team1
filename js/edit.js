@@ -6,6 +6,10 @@
     $('#ingredientForm').on('submit', saveIngredient);
     $('#cancelBtn').on('click', cancelEdit);
     $('#deleteItemBtn').on('click', deleteItem);
+    
+    // 写真関連のイベント
+    $('#photo').on('change', previewPhoto);
+    $('#removePhotoBtn').on('click', removePhoto);
 
     // ページデータ読み込み
     function loadPageData() {
@@ -41,7 +45,8 @@
             quantity: 3,
             unit: '個',
             category: '野菜',
-            memo: '冷蔵庫の野菜室に保管'
+            memo: '冷蔵庫の野菜室に保管',
+            photoUrl: 'https://via.placeholder.com/300x250?text=トマト'
         };
 
         $('#ingredientName').val(dummyData.name);
@@ -51,6 +56,53 @@
         $('#unit').val(dummyData.unit);
         $('#category').val(dummyData.category);
         $('#memo').val(dummyData.memo);
+
+        // ダミー写真を表示
+        if (dummyData.photoUrl) {
+            $('#previewImage').attr('src', dummyData.photoUrl);
+            $('#photoPreview').show();
+        }
+    }
+
+    // 写真プレビュー
+    function previewPhoto(e) {
+        const file = e.target.files[0];
+        
+        if (!file) {
+            return;
+        }
+
+        // ファイルタイプチェック
+        if (!file.type.startsWith('image/')) {
+            alert('画像ファイルのみアップロード可能です');
+            $('#photo').val('');
+            return;
+        }
+
+        // ファイルサイズチェック（5MB まで）
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert('ファイルサイズは 5MB 以下にしてください');
+            $('#photo').val('');
+            return;
+        }
+
+        // プレビュー表示
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            $('#previewImage').attr('src', event.target.result);
+            $('#photoPreview').show();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // 写真削除
+    function removePhoto(e) {
+        e.preventDefault();
+        
+        $('#photo').val('');
+        $('#photoPreview').hide();
+        $('#previewImage').attr('src', '');
     }
 
     // 食材保存
@@ -64,6 +116,7 @@
         const unit = $('#unit').val();
         const category = $('#category').val();
         const memo = $('#memo').val();
+        const photoFile = $('#photo')[0].files[0];
 
         // バリデーション
         if (!ingredientName || !purchaseDate || !expiryDate) {
@@ -77,16 +130,43 @@
             return;
         }
 
-        // 保存
-        alert(ingredientName + ' を保存しました！');
+        // ローディング表示
+        const $btn = $('.btn-save');
+        const originalText = $btn.text();
+        $btn.text('保存中...').prop('disabled', true);
+
+        // FormData を使って写真を含めて送信（後で REST API に変更）
+        const formData = new FormData();
+        formData.append('name', ingredientName);
+        formData.append('purchaseDate', purchaseDate);
+        formData.append('expiryDate', expiryDate);
+        formData.append('quantity', quantity);
+        formData.append('unit', unit);
+        formData.append('category', category);
+        formData.append('memo', memo);
+        
+        if (photoFile) {
+            formData.append('photo', photoFile);
+        }
+
+        // 現在はアラート表示（後で REST API に変更）
+        alert(ingredientName + ' を保存しました！\n\n写真：' + (photoFile ? photoFile.name : 'なし'));
         
         // 後で REST API に変更
         // $.ajax({
         //     url: 'http://localhost:5000/api/ingredients/save',
         //     method: 'POST',
-        //     data: JSON.stringify({ ... }),
+        //     data: formData,
+        //     processData: false,
+        //     contentType: false,
+        //     headers: {
+        //         'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+        //     },
         //     ...
         // })
+
+        // ボタン戻す
+        $btn.text(originalText).prop('disabled', false);
 
         // トップページに戻る
         window.location.href = 'index.html';
