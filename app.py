@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 import sqlite3
 import os
 
@@ -13,10 +13,126 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    # templates/index.html を表示させる
-    return render_template('index.html')
+    conn = get_db_connection()
 
-# 接続テスト
+    ingredients = conn.execute("""
+        SELECT * 
+        FROM ingredients 
+        WHERE is_deleted = 0 
+        ORDER BY expiry_date
+    """).fetchall()
+
+    conn.close()
+
+    return render_template(
+        'index.html',
+        ingredients=ingredients
+    )
+
+# 食材追加（Create：「新規追加」ボタンを本当に動かす
+@app.route('/add', methods=['GET', 'POST'])
+def add_ingredient():
+
+    if request.method == 'POST':
+
+        name = request.form['ingredientName']
+        purchase_date = request.form['purchaseDate']
+        expiry_date = request.form['expiryDate']
+        quantity = request.form['quantity']
+        unit = request.form['unit']
+        category = request.form['category']
+        memo = request.form['memo']
+
+        conn = get_db_connection()
+
+        conn.execute("""
+            INSERT INTO ingredients
+            (name, purchase_date, expiry_date,
+             quantity, unit, category, memo, is_deleted)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+        """, (
+            name,
+            purchase_date,
+            expiry_date,
+            quantity,
+            unit,
+            category,
+            memo
+        ))
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/')
+
+    return render_template('edit.html')
+
+#編集ボタンを本当に動かす
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_ingredient(id):
+
+    conn = get_db_connection()
+
+    if request.method == 'POST':
+
+        conn.execute("""
+            UPDATE ingredients
+            SET
+                name=?,
+                purchase_date=?,
+                expiry_date=?,
+                quantity=?,
+                unit=?,
+                category=?,
+                memo=?
+            WHERE id=?
+        """,(
+            request.form['ingredientName'],
+            request.form['purchaseDate'],
+            request.form['expiryDate'],
+            request.form['quantity'],
+            request.form['unit'],
+            request.form['category'],
+            request.form['memo'],
+            id
+        ))
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/')
+
+
+    ingredient = conn.execute(
+        "SELECT * FROM ingredients WHERE id=? AND is_deleted=0",
+        (id,)
+    ).fetchone()
+
+    conn.close()
+
+    return render_template(
+        'edit.html',
+        ingredient=ingredient
+    )
+
+#削除ルート
+@app.route('/delete/<int:id>', methods=['POST'])
+def delete_ingredient(id):
+
+    conn = get_db_connection()
+
+    conn.execute("""
+        UPDATE ingredients
+        SET is_deleted = 1
+        WHERE id = ?
+    """,(id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect('/')
+
+# DB接続テスト
 @app.route('/test-db')
 def test_db():
     conn = get_db_connection()

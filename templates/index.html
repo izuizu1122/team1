@@ -18,94 +18,57 @@
     <main class="container">
         <section class="search-section">
             <input type="text" class="search-input" id="searchInput" placeholder="食材を検索...">
-            <button class="btn-add" id="addBtn">➕ 新規追加</button>
+            <a href="/add" class="btn-add">➕ 新規追加</a>
         </section>
 
         <section class="ingredient-list" id="ingredientList">
-            <!-- 食材アイテム1（賞味期限が近い） -->
-            <div class="ingredient-card alert">
-                <div class="ingredient-info">
-                    <h3>トマト</h3>
-                    <p class="purchase-date">📅 購入日: 2026/04/10</p>
-                    <p class="expiry-date">⏰ 賞味期限: 2026/04/25</p>
-                    <p class="quantity">📦 数量: 3個</p>
-                </div>
-                <div class="ingredient-actions">
-                    <button class="btn-edit">編集</button>
-                    <button class="btn-delete">削除</button>
-                </div>
+        
+        {% for item in ingredients %}
+        <div class="ingredient-card">
+            <div class="ingredient-info">
+                <h3>{{ item["name"] }}</h3>
+                
+                <p class="purchase-date">
+                    📅 購入日: {{ item["purchase_date"] }}
+                </p>
+
+                <p class="expiry-date">
+                    ⏰ 賞味期限: {{ item["expiry_date"] }}
+                </p>
+
+                <p class="quantity">
+                    📦 数量:
+                    {{ item["quantity"] }}
+                    {{ item["unit"] }}
+                </p>
             </div>
 
-            <!-- 食材アイテム2（通常） -->
-            <div class="ingredient-card">
-                <div class="ingredient-info">
-                    <h3>玉ねぎ</h3>
-                    <p class="purchase-date">📅 購入日: 2026/04/15</p>
-                    <p class="expiry-date">⏰ 賞味期限: 2026/05/10</p>
-                    <p class="quantity">📦 数量: 5個</p>
-                </div>
-                <div class="ingredient-actions">
-                    <button class="btn-edit">編集</button>
-                    <button class="btn-delete">削除</button>
-                </div>
-            </div>
+            <div class="ingredient-actions">
+                <a href="/edit/{{ item['id'] }}"
+                class="btn-edit">
+                編集
+            　　</a>
 
-            <!-- 食材アイテム3 -->
-            <div class="ingredient-card">
-                <div class="ingredient-info">
-                    <h3>塩</h3>
-                    <p class="purchase-date">📅 購入日: 2026/03/20</p>
-                    <p class="expiry-date">⏰ 賞味期限: 2026/12/31</p>
-                    <p class="quantity">📦 数量: 1個</p>
-                </div>
-                <div class="ingredient-actions">
-                    <button class="btn-edit">編集</button>
-                    <button class="btn-delete">削除</button>
-                </div>
+                <form
+                action="/delete/{{ item['id'] }}"
+                method="POST"
+                style="display:inline;"
+                >
+                
+                <button
+                type="submit"
+                class="btn-delete"
+                onclick="return confirm('削除しますか？')"
+                >
+                削除
+                </button>
+            
+                </form>
             </div>
-
-            <!-- 食材アイテム4 -->
-            <div class="ingredient-card">
-                <div class="ingredient-info">
-                    <h3>キャベツ</h3>
-                    <p class="purchase-date">📅 購入日: 2026/04/12</p>
-                    <p class="expiry-date">⏰ 賞味期限: 2026/04/28</p>
-                    <p class="quantity">📦 数量: 2個</p>
-                </div>
-                <div class="ingredient-actions">
-                    <button class="btn-edit">編集</button>
-                    <button class="btn-delete">削除</button>
-                </div>
-            </div>
-
-            <!-- 食材アイテム5 -->
-            <div class="ingredient-card">
-                <div class="ingredient-info">
-                    <h3>ニンジン</h3>
-                    <p class="purchase-date">📅 購入日: 2026/04/01</p>
-                    <p class="expiry-date">⏰ 賞味期限: 2026/05/15</p>
-                    <p class="quantity">📦 数量: 4個</p>
-                </div>
-                <div class="ingredient-actions">
-                    <button class="btn-edit">編集</button>
-                    <button class="btn-delete">削除</button>
-                </div>
-            </div>
-
-            <!-- 食材アイテム6 -->
-            <div class="ingredient-card alert">
-                <div class="ingredient-info">
-                    <h3>牛乳</h3>
-                    <p class="purchase-date">📅 購入日: 2026/04/18</p>
-                    <p class="expiry-date">⏰ 賞味期限: 2026/04/24</p>
-                    <p class="quantity">📦 数量: 1個</p>
-                </div>
-                <div class="ingredient-actions">
-                    <button class="btn-edit">編集</button>
-                    <button class="btn-delete">削除</button>
-                </div>
-            </div>
-        </section>
+        </div>
+        {% endfor %}
+        
+    </section>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
