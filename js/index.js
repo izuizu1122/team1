@@ -16,13 +16,14 @@
 
     // 新規追加ボタン
     $('#addBtn').on('click', function() {
-        alert('編集ページに移動します');
+        window.location.href = 'edit.html';
     });
 
     // 編集ボタン
     $('.btn-edit').on('click', function() {
         const ingredientName = $(this).closest('.ingredient-card').find('h3').text();
-        alert(ingredientName + ' を編集します');
+        showToast(ingredientName + ' を編集します', 'info');
+        // 後で: window.location.href = 'edit.html?id=xxx';
     });
 
     // 削除ボタン
@@ -32,6 +33,7 @@
         if (confirm(ingredientName + ' を削除しますか？')) {
             $(this).closest('.ingredient-card').fadeOut(300, function() {
                 $(this).remove();
+                showToast(ingredientName + ' を削除しました', 'success');
             });
         }
     });

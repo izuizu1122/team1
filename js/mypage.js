@@ -22,7 +22,7 @@
         const notificationDays = $('#notificationDays').val();
         const theme = $('#theme').val();
 
-        alert('設定を保存しました\n\n通知: ' + notificationDays + '日前\nテーマ: ' + theme);
+        showToast('設定を保存しました', 'success');
         
         // 後で REST API に変更
         // $.ajax({ ... })
@@ -37,11 +37,11 @@
         }
 
         if (newPassword.length < 6) {
-            alert('パスワードは6文字以上にしてください');
+            showToast('パスワードは6文字以上にしてください', 'error');
             return;
         }
 
-        alert('パスワードを変更しました');
+        showToast('パスワードを変更しました', 'success');
         
         // 後で REST API に変更
         // $.ajax({ ... })
@@ -58,7 +58,7 @@
         const doubleConfirmed = confirm('本当に削除しますか？（再確認）');
         
         if (doubleConfirmed) {
-            alert('アカウントを削除しました');
+            showToast('アカウントを削除しました', 'success');
             // 後で REST API に変更
             // window.location.href = 'login.html';
         }
