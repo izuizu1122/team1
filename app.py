@@ -16,5 +16,18 @@ def index():
     # templates/index.html を表示させる
     return render_template('index.html')
 
+# 接続テスト
+@app.route('/test-db')
+def test_db():
+    conn = get_db_connection()
+
+    tables = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table';"
+    ).fetchall()
+
+    conn.close()
+
+    return str([row["name"] for row in tables])
+
 if __name__ == '__main__':
     app.run(debug=True)
