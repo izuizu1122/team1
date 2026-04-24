@@ -133,9 +133,10 @@
         }
 
         // ローディング表示
+        showLoading('保存中...');
         const $btn = $('.btn-save');
         const originalText = $btn.text();
-        $btn.text('保存中...').prop('disabled', true);
+        setButtonLoading($btn, true);
 
         // FormData を使って写真を含めて送信（後で REST API に変更）
         const formData = new FormData();
@@ -151,9 +152,6 @@
             formData.append('photo', photoFile);
         }
 
-        // トースト表示
-        showToast(ingredientName + ' を保存しました', 'success');
-        
         // 後で REST API に変更
         // $.ajax({
         //     url: 'http://localhost:5000/api/ingredients/save',
@@ -164,21 +162,30 @@
         //     ...
         // })
 
-        // ボタン戻す
         setTimeout(function() {
-            $btn.text(originalText).prop('disabled', false);
-            // トップページに戻る
-            window.location.href = 'index.html';
+            hideLoading();
+            setButtonLoading($btn, false);
+            showToast(ingredientName + ' を保存しました', 'success');
+            
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
         }, 1500);
     }
 
     // キャンセル
     function cancelEdit() {
         if (confirm('編集をキャンセルしますか？')) {
-            showToast('キャンセルしました', 'info');
+            showLoading('キャンセル中...');
+            
             setTimeout(function() {
-                window.location.href = 'index.html';
-            }, 500);
+                hideLoading();
+                showToast('キャンセルしました', 'info');
+                
+                setTimeout(function() {
+                    window.location.href = 'index.html';
+                }, 500);
+            }, 800);
         }
     }
 
@@ -194,8 +201,8 @@
             return;
         }
 
-        showToast(ingredientName + ' を削除しました', 'success');
-        
+        showLoading('削除中...');
+
         // 後で REST API に変更
         // $.ajax({
         //     url: 'http://localhost:5000/api/ingredients/delete/' + id,
@@ -204,7 +211,12 @@
         // })
 
         setTimeout(function() {
-            window.location.href = 'index.html';
+            hideLoading();
+            showToast(ingredientName + ' を削除しました', 'success');
+            
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
         }, 1500);
     }
 });
