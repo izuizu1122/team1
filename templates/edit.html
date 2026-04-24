@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>食材を編集 - 食材管理アプリ</title>
-    <link rel="stylesheet" href="css/edit-styles.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/edit-styles.css')}}">
 </head>
 <body>
     <!-- ナビゲーションバー -->
@@ -19,7 +19,7 @@
         <div class="edit-box">
             <h2 id="pageTitle">食材を追加</h2>
 
-            <form id="ingredientForm" class="ingredient-form" enctype="multipart/form-data">
+            <form id="ingredientForm" class="ingredient-form" method="POST" action="{% if ingredient %}/edit/{{ ingredient['id'] }}{% else %}/add{% endif %}" enctype="multipart/form-data">
                 <!-- 食材名 -->
                 <div class="form-group">
                     <label for="ingredientName">食材名 <span class="required">*</span></label>
@@ -28,6 +28,7 @@
                         id="ingredientName" 
                         name="ingredientName" 
                         placeholder="例：トマト" 
+                        value="{{ ingredient['name'] if ingredient else '' }}"
                         required
                     >
                 </div>
@@ -39,6 +40,7 @@
                         type="date" 
                         id="purchaseDate" 
                         name="purchaseDate" 
+                        value="{{ ingredient['purchase_date'] if ingredient else '' }}"
                         required
                     >
                 </div>
@@ -50,6 +52,7 @@
                         type="date" 
                         id="expiryDate" 
                         name="expiryDate" 
+                        value="{{ ingredient['expiry_date'] if ingredient else '' }}"
                         required
                     >
                 </div>
@@ -62,17 +65,36 @@
                             type="number" 
                             id="quantity" 
                             name="quantity" 
+                            value="{{ ingredient['quantity'] if ingredient else 1 }}"
                             min="1" 
                             value="1" 
                             required
                         >
                         <select id="unit" name="unit">
-                            <option value="個">個</option>
-                            <option value="本">本</option>
-                            <option value="袋">袋</option>
-                            <option value="パック">パック</option>
-                            <option value="g">g</option>
-                            <option value="ml">ml</option>
+                            <option value="個"
+                                {% if ingredient and ingredient['unit'] == '個' %}selected{% endif %}>
+                                個
+                            </option>
+                            <option value="本"
+                                {% if ingredient and ingredient['unit'] == '本' %}selected{% endif %}>
+                                本
+                            </option>
+                            <option value="袋"
+                                {% if ingredient and ingredient['unit'] == '袋' %}selected{% endif %}>
+                                袋
+                            </option>
+                            <option value="パック"
+                                {% if ingredient and ingredient['unit'] == 'パック' %}selected{% endif %}>
+                                パック
+                            </option>
+                            <option value="g"
+                                {% if ingredient and ingredient['unit'] == 'g' %}selected{% endif %}>
+                                g
+                            </option>
+                            <option value="ml"
+                                {% if ingredient and ingredient['unit'] == 'ml' %}selected{% endif %}>
+                                ml
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -82,13 +104,34 @@
                     <label for="category">カテゴリ</label>
                     <select id="category" name="category">
                         <option value="">選択してください</option>
-                        <option value="野菜">野菜</option>
-                        <option value="果物">果物</option>
-                        <option value="乳製品">乳製品</option>
-                        <option value="肉">肉</option>
-                        <option value="魚">魚</option>
-                        <option value="調味料">調味料</option>
-                        <option value="その他">その他</option>
+                        <option value="野菜"
+                            {% if ingredient and ingredient['category']=='野菜' %}selected{% endif %}>
+                            野菜
+                        </option>
+                        <option value="果物"
+                            {% if ingredient and ingredient['category']=='果物' %}selected{% endif %}>
+                            果物
+                        </option>
+                        <option value="乳製品"
+                            {% if ingredient and ingredient['category']=='乳製品' %}selected{% endif %}>
+                            乳製品
+                        </option>
+                        <option value="肉"
+                            {% if ingredient and ingredient['category']=='肉' %}selected{% endif %}>
+                            肉
+                        </option>
+                        <option value="魚"
+                            {% if ingredient and ingredient['category']=='魚' %}selected{% endif %}>
+                            魚
+                        </option>
+                        <option value="調味料"
+                            {% if ingredient and ingredient['category']=='調味料' %}selected{% endif %}>
+                            調味料
+                        </option>
+                        <option value="その他"
+                            {% if ingredient and ingredient['category']=='その他' %}selected{% endif %}>
+                            その他
+                        </option>
                     </select>
                 </div>
 
@@ -117,7 +160,7 @@
                         name="memo" 
                         placeholder="例：冷蔵庫の野菜室に保管"
                         rows="3"
-                    ></textarea>
+                        >{{ ingredient['memo'] if ingredient else '' }}</textarea>
                 </div>
 
                 <!-- ボタン -->
@@ -135,8 +178,8 @@
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="js/toast.js"></script>
-    <script src="js/loading.js"></script>
-    <script src="js/edit.js"></script>
+    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/loading.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/edit.js') }}"></script>
 </body>
 </html>

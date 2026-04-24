@@ -165,6 +165,9 @@ body {
 .btn-edit {
     background-color: #3498db;
     color: white;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
 .btn-edit:hover {
