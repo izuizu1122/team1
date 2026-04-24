@@ -16,23 +16,35 @@
 
     // 新規追加ボタン
     $('#addBtn').on('click', function() {
-        alert('編集ページに移動します');
+        showLoading('食材追加ページへ移動中...');
+        setTimeout(function() {
+            hideLoading();
+            window.location.href = 'edit.html';
+        }, 800);
     });
 
     // 編集ボタン
     $('.btn-edit').on('click', function() {
         const ingredientName = $(this).closest('.ingredient-card').find('h3').text();
-        alert(ingredientName + ' を編集します');
+        showToast(ingredientName + ' を編集します', 'info');
+        // 後で: window.location.href = 'edit.html?id=xxx';
     });
 
     // 削除ボタン
     $('.btn-delete').on('click', function() {
         const ingredientName = $(this).closest('.ingredient-card').find('h3').text();
+        const $card = $(this).closest('.ingredient-card');
         
         if (confirm(ingredientName + ' を削除しますか？')) {
-            $(this).closest('.ingredient-card').fadeOut(300, function() {
-                $(this).remove();
-            });
+            showLoading('削除中...');
+            
+            setTimeout(function() {
+                $card.fadeOut(300, function() {
+                    $(this).remove();
+                    hideLoading();
+                    showToast(ingredientName + ' を削除しました', 'success');
+                });
+            }, 500);
         }
     });
 });

@@ -1,6 +1,6 @@
 # SQLite
 *.db
-*.dbーjournal
+*.db-journal
 *.sqlite3
 
 # Python

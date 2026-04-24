@@ -74,7 +74,7 @@
 
         // ファイルタイプチェック
         if (!file.type.startsWith('image/')) {
-            alert('画像ファイルのみアップロード可能です');
+            showToast('画像ファイルのみアップロード可能です', 'error');
             $('#photo').val('');
             return;
         }
@@ -82,7 +82,7 @@
         // ファイルサイズチェック（5MB まで）
         const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
-            alert('ファイルサイズは 5MB 以下にしてください');
+            showToast('ファイルサイズは 5MB 以下にしてください', 'error');
             $('#photo').val('');
             return;
         }
@@ -92,6 +92,7 @@
         reader.onload = function(event) {
             $('#previewImage').attr('src', event.target.result);
             $('#photoPreview').show();
+            showToast('写真をアップロードしました', 'success');
         };
         reader.readAsDataURL(file);
     }
@@ -103,6 +104,7 @@
         $('#photo').val('');
         $('#photoPreview').hide();
         $('#previewImage').attr('src', '');
+        showToast('写真を削除しました', 'info');
     }
 
     // 食材保存
@@ -120,20 +122,21 @@
 
         // バリデーション
         if (!ingredientName || !purchaseDate || !expiryDate) {
-            alert('必須項目を入力してください');
+            showToast('必須項目を入力してください', 'error');
             return;
         }
 
         // 賞味期限が購入日より後かチェック
         if (new Date(expiryDate) <= new Date(purchaseDate)) {
-            alert('賞味期限は購入日より後に設定してください');
+            showToast('賞味期限は購入日より後に設定してください', 'error');
             return;
         }
 
         // ローディング表示
+        showLoading('保存中...');
         const $btn = $('.btn-save');
         const originalText = $btn.text();
-        $btn.text('保存中...').prop('disabled', true);
+        setButtonLoading($btn, true);
 
         // FormData を使って写真を含めて送信（後で REST API に変更）
         const formData = new FormData();
@@ -149,9 +152,6 @@
             formData.append('photo', photoFile);
         }
 
-        // 現在はアラート表示（後で REST API に変更）
-        alert(ingredientName + ' を保存しました！\n\n写真：' + (photoFile ? photoFile.name : 'なし'));
-        
         // 後で REST API に変更
         // $.ajax({
         //     url: 'http://localhost:5000/api/ingredients/save',
@@ -159,23 +159,33 @@
         //     data: formData,
         //     processData: false,
         //     contentType: false,
-        //     headers: {
-        //         'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-        //     },
         //     ...
         // })
 
-        // ボタン戻す
-        $btn.text(originalText).prop('disabled', false);
-
-        // トップページに戻る
-        window.location.href = 'index.html';
+        setTimeout(function() {
+            hideLoading();
+            setButtonLoading($btn, false);
+            showToast(ingredientName + ' を保存しました', 'success');
+            
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
+        }, 1500);
     }
 
     // キャンセル
     function cancelEdit() {
         if (confirm('編集をキャンセルしますか？')) {
-            window.location.href = 'index.html';
+            showLoading('キャンセル中...');
+            
+            setTimeout(function() {
+                hideLoading();
+                showToast('キャンセルしました', 'info');
+                
+                setTimeout(function() {
+                    window.location.href = 'index.html';
+                }, 500);
+            }, 800);
         }
     }
 
@@ -191,8 +201,8 @@
             return;
         }
 
-        alert(ingredientName + ' を削除しました');
-        
+        showLoading('削除中...');
+
         // 後で REST API に変更
         // $.ajax({
         //     url: 'http://localhost:5000/api/ingredients/delete/' + id,
@@ -200,6 +210,13 @@
         //     ...
         // })
 
-        window.location.href = 'index.html';
+        setTimeout(function() {
+            hideLoading();
+            showToast(ingredientName + ' を削除しました', 'success');
+            
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
+        }, 1500);
     }
 });

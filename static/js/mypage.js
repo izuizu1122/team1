@@ -19,13 +19,21 @@
 
     // 設定保存
     function saveSetting() {
+        const $btn = $('#saveSetting');
         const notificationDays = $('#notificationDays').val();
         const theme = $('#theme').val();
 
-        alert('設定を保存しました\n\n通知: ' + notificationDays + '日前\nテーマ: ' + theme);
-        
-        // 後で REST API に変更
-        // $.ajax({ ... })
+        showLoading('設定を保存中...');
+        setButtonLoading($btn, true);
+
+        setTimeout(function() {
+            hideLoading();
+            setButtonLoading($btn, false);
+            showToast('設定を保存しました', 'success');
+            
+            // 後で REST API に変更
+            // $.ajax({ ... })
+        }, 1000);
     }
 
     // パスワード変更
@@ -37,14 +45,19 @@
         }
 
         if (newPassword.length < 6) {
-            alert('パスワードは6文字以上にしてください');
+            showToast('パスワードは6文字以上にしてください', 'error');
             return;
         }
 
-        alert('パスワードを変更しました');
-        
-        // 後で REST API に変更
-        // $.ajax({ ... })
+        showLoading('パスワードを変更中...');
+
+        setTimeout(function() {
+            hideLoading();
+            showToast('パスワードを変更しました', 'success');
+            
+            // 後で REST API に変更
+            // $.ajax({ ... })
+        }, 1000);
     }
 
     // アカウント削除
@@ -58,9 +71,14 @@
         const doubleConfirmed = confirm('本当に削除しますか？（再確認）');
         
         if (doubleConfirmed) {
-            alert('アカウントを削除しました');
-            // 後で REST API に変更
-            // window.location.href = 'login.html';
+            showLoading('アカウントを削除中...');
+
+            setTimeout(function() {
+                hideLoading();
+                showToast('アカウントを削除しました', 'success');
+                // 後で REST API に変更
+                // window.location.href = 'login.html';
+            }, 1500);
         }
     }
 });
