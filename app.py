@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # データベースに接続する関数（後で使います）
 def get_db_connection():
-    db_path = os.path.join('datebase', 'food_app.db')
+    db_path = os.path.join('database', 'food_app.db')
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
