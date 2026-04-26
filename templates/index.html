@@ -17,7 +17,10 @@
     <!-- メインコンテンツ -->
     <main class="container">
         <section class="search-section">
-            <input type="text" class="search-input" id="searchInput" placeholder="食材を検索...">
+            <form action="/" method="GET" style="display: flex; flex-grow: 1; gap: 10px;"></form>
+            <input type="text" name="q" class="search-input" id="searchInput" placeholder="食材を検索..." value="{{ query }}">
+            <button type="submit" class="btn-search">検索</button>
+            </form>
             <a href="/add" class="btn-add">➕ 新規追加</a>
         </section>
 

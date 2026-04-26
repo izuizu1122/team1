@@ -71,87 +71,41 @@
                             required
                         >
                         <select id="unit" name="unit">
-                            <option value="個"
-                                {% if ingredient and ingredient['unit'] == '個' %}selected{% endif %}>
-                                個
-                            </option>
-                            <option value="本"
-                                {% if ingredient and ingredient['unit'] == '本' %}selected{% endif %}>
-                                本
-                            </option>
-                            <option value="袋"
-                                {% if ingredient and ingredient['unit'] == '袋' %}selected{% endif %}>
-                                袋
-                            </option>
-                            <option value="パック"
-                                {% if ingredient and ingredient['unit'] == 'パック' %}selected{% endif %}>
-                                パック
-                            </option>
-                            <option value="g"
-                                {% if ingredient and ingredient['unit'] == 'g' %}selected{% endif %}>
-                                g
-                            </option>
-                            <option value="ml"
-                                {% if ingredient and ingredient['unit'] == 'ml' %}selected{% endif %}>
-                                ml
-                            </option>
-                        </select>
-                    </div>
-                </div>
+                            <option value="個" {% if ingredient and ingredient['unit'] == '個' %}selected{% endif %}>個</option>+
+            <option value="本" {% if ingredient and ingredient['unit'] == '本' %}selected{% endif %}>本</option>
+            <option value="袋" {% if ingredient and ingredient['unit'] == '袋' %}selected{% endif %}>袋</option>
+            <option value="g" {% if ingredient and ingredient['unit'] == 'g' %}selected{% endif %}>g</option>
+            <option value="kg" {% if ingredient and ingredient['unit'] == 'kg' %}selected{% endif %}>kg</option>
+            <option value="ml" {% if ingredient and ingredient['unit'] == 'ml' %}selected{% endif %}>ml</option>
+            <option value="L" {% if ingredient and ingredient['unit'] == 'L' %}selected{% endif %}>L</option>
+            <option value="パック" {% if ingredient and ingredient['unit'] == 'パック' %}selected{% endif %}>パック</option>
+        </select>
+    </div> <div class="form-group">
+        <label for="category">カテゴリー</label>
+        <select id="category" name="category" class="form-control">
+            <option value="野菜" {% if ingredient and ingredient['category'] == '野菜' %}selected{% endif %}>野菜</option>
+            <option value="肉" {% if ingredient and ingredient['category'] == '肉' %}selected{% endif %}>肉</option>
+            <option value="魚" {% if ingredient and ingredient['category'] == '魚' %}selected{% endif %}>魚</option>
+            <option value="調味料" {% if ingredient and ingredient['category'] == '調味料' %}selected{% endif %}>調味料</option>
+            <option value="その他" {% if ingredient and ingredient['category'] == 'その他' %}selected{% endif %}>その他</option>
+        </select>
+    </div>
 
-                <!-- カテゴリ -->         
-                <div class="form-group">
-                    <label for="category">カテゴリー</label>
-                    <select id="category" name="category">
-                        <option value="野菜" {% if ingredient and ingredient['category'] == '野菜' %}selected{% endif %}>野菜</option>
-                        <option value="肉" {% if ingredient and ingredient['category'] == '肉' %}selected{% endif %}>肉</option>
-                        <option value="魚" {% if ingredient and ingredient['category'] == '魚' %}selected{% endif %}>魚</option>
-                        <option value="調味料" {% if ingredient and ingredient['category'] == '調味料' %}selected{% endif %}>調味料</option>
-                        <option value="その他" {% if ingredient and ingredient['category'] == 'その他' %}selected{% endif %}>その他</option>
-                
+    <div class="form-group">
+        <label for="photo">写真</label>
+        <input type="file" id="photo" name="image" accept="image/*" class="form-control">
+    </div>
 
-                 
-                </select>
-            </div><div class="form-group">
-                <label for="memo">メモ</label>
-                <textarea id="memo" name="memo" rows="4" placeholder="補足情報を入力">{{ ingredient['memo'] if ingredient else '' }}</textarea>
-            </div>
+    <div class="form-group">
+        <label for="memo">メモ</label>
+        <textarea id="memo" name="memo" class="form-control" rows="4" placeholder="例：冷蔵庫の野菜室に保管">{{ ingredient['memo'] if ingredient else '' }}</textarea>
+    </div>
 
-            <div class="form-group">
-
-                <!-- 写真アップロード -->
-                <div class="form-group">
-                    <label for="photo">写真</label>
-                    <div class="photo-upload">
-                        <input 
-                            type="file" 
-                            id="photo" 
-                            name="photo" 
-                            accept="image/*"
-                        >
-                        <div id="photoPreview" class="photo-preview" style="display:none;">
-                            <img id="previewImage" src="" alt="プレビュー">
-                            <button type="button" class="btn-remove-photo" id="removePhotoBtn">削除</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- メモ -->
-                <div class="form-group">
-                    <label for="memo">メモ</label>
-                    <textarea 
-                        id="memo" 
-                        name="memo" 
-                        placeholder="例：冷蔵庫の野菜室に保管"
-                        rows="3"
-                        >{{ ingredient['memo'] if ingredient else '' }}</textarea>
-                </div>
-
-                <!-- ボタン -->
-                <div class="form-actions">
-                    <button type="submit" class="btn-save" id="submitBtn">保存</button>
-                    <button type="button" class="btn-cancel" id="cancelBtn">キャンセル</button>
-                </div>
+    <div class="form-actions mt-4">
+        <button type="submit" class="btn btn-save">保存</button>
+        <a href="/" class="btn btn-cancel">キャンセル</a>
+    </div>
+                           
             </form>
 
             <!-- 削除ボタン（編集時のみ） -->
