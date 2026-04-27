@@ -6,6 +6,7 @@ app = Flask(__name__)
 # --- 追加：画像の保存場所をアプリに教える ---
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # データベースに接続する関数（後で使います）
 def get_db_connection():
@@ -53,13 +54,38 @@ def add_ingredient():
         category = request.form['category']
         memo = request.form['memo']
 
+        image = request.files.get('image')
+
         conn = get_db_connection()
+        cursor = conn.cursor()
+
+        image_name = None
+        
+        if image and image.filename != "":
+            image_name = image.filename
+            image.save(
+                os.path.join(
+                    app.config['UPLOAD_FOLDER'],
+                    image_name
+                )
+            )
+
+            cursor.execute("""
+                INSERT INTO uploads
+                (file_name, file_path)
+                VALUES (?, ?)
+            """, (
+                image_name,
+                'static/uploads/' + image_name
+            ))
+
+            upload_id = cursor.lastrowid            
 
         conn.execute("""
             INSERT INTO ingredients
             (name, purchase_date, expiry_date,
-             quantity, unit, category, memo, is_deleted)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+             quantity, unit, category, memo, upload_id, is_deleted)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
         """, (
             name,
             purchase_date,
@@ -67,7 +93,8 @@ def add_ingredient():
             quantity,
             unit,
             category,
-            memo
+            memo,
+            upload_id
         ))
 
         conn.commit()
@@ -81,17 +108,17 @@ def add_ingredient():
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_ingredient(id):
     conn = get_db_connection()
-    ingredient = conn.execute('SELECT * FROM ingredients WHERE id = ?', (id,)).fetchone()
+    ingredient = conn.execute("""
+        SELECT
+        ingredients.*,
+        uploads.file_path
+        FROM ingredients
+        LEFT JOIN uploads
+        ON ingredients.upload_id = uploads.id
+        WHERE ingredients.id = ?
+        """, (id,)).fetchone()
 
     if request.method == 'POST':
-        # --- ここから画像処理を追加 ---
-        image = request.files.get('image')
-        image_name = ingredient['photo_path']  # 基本は今の画像名（変えない）
-
-        if image and image.filename != "":
-            image_name = image.filename
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_name))
-        # --- ここまで ---
 
         name = request.form['ingredientName']
         purchase_date = request.form['purchaseDate']
@@ -101,12 +128,33 @@ def edit_ingredient(id):
         category = request.form['category']
         memo = request.form['memo']
 
+        image = request.files.get('image')
+
+        cursor = conn.cursor()
+
+        upload_id = ingredient['upload_id']
+
+        if image and image.filename != "":
+            image_name = image.filename
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_name))
+
+            cursor.execute("""
+                INSERT INTO uploads
+                (file_name, file_path)
+                VALUES (?, ?)
+            """, (
+                image_name,
+                'static/uploads/' + image_name
+            ))
+
+            upload_id = cursor.lastrowid
+
         # SQLの UPDATE 文に photo_path を追加
         conn.execute("""
             UPDATE ingredients
-            SET name=?, purchase_date=?, expiry_date=?, quantity=?, unit=?, category=?, memo=?, photo_path=?
+            SET name=?, purchase_date=?, expiry_date=?, quantity=?, unit=?, category=?, memo=?, upload_id=?
             WHERE id=?
-        """, (name, purchase_date, expiry_date, quantity, unit, category, memo, image_name, id))
+        """, (name, purchase_date, expiry_date, quantity, unit, category, memo, upload_id, id))
         
         conn.commit()
         conn.close()
