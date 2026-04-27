@@ -3,7 +3,7 @@
     loadPageData();
 
     // イベントリスナー
-    $('#ingredientForm').on('submit', saveIngredient);
+    // $('#ingredientForm').on('submit', saveIngredient);
     $('#cancelBtn').on('click', cancelEdit);
     $('#deleteItemBtn').on('click', deleteItem);
     
@@ -168,7 +168,7 @@
             showToast(ingredientName + ' を保存しました', 'success');
             
             setTimeout(function() {
-                window.location.href = 'index.html';
+                window.location.href = '/';
             }, 1000);
         }, 1500);
     }
@@ -183,7 +183,7 @@
                 showToast('キャンセルしました', 'info');
                 
                 setTimeout(function() {
-                    window.location.href = 'index.html';
+                    window.location.href = '/';
                 }, 500);
             }, 800);
         }
@@ -215,7 +215,7 @@
             showToast(ingredientName + ' を削除しました', 'success');
             
             setTimeout(function() {
-                window.location.href = 'index.html';
+                window.location.href = '/';
             }, 1000);
         }, 1500);
     }
