@@ -1,23 +1,27 @@
 ﻿// トースト通知機能
-function showToast(message, type = 'success', duration = 3000) {
-    // コンテナがなければ作成
-    if ($('.toast-container').length === 0) {
-        $('body').append('<div class="toast-container"></div>');
-    }
+function showToast(message,type='info'){
 
-    // トースト要素を作成
-    const $toast = $('<div>')
-        .addClass('toast ' + type)
-        .text(message);
+let container=document.querySelector('.toast-container');
 
-    // コンテナに追加
-    $('.toast-container').append($toast);
+if(!container){
+container=document.createElement('div');
+container.className='toast-container';
+document.body.appendChild(container);
+}
 
-    // 指定時間後に削除
-    setTimeout(function() {
-        $toast.addClass('fadeOut');
-        setTimeout(function() {
-            $toast.remove();
-        }, 300);
-    }, duration);
+const toast=document.createElement('div');
+toast.className='toast '+type;
+toast.innerText=message;
+
+container.appendChild(toast);
+
+setTimeout(()=>{
+toast.classList.add('fadeOut');
+
+setTimeout(()=>{
+toast.remove();
+},300);
+
+},4000);
+
 }
