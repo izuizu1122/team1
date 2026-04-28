@@ -1,14 +1,14 @@
-from flask import Flask, render_template, request, redirect
+﻿from flask import Flask, render_template, request, redirect
 import sqlite3
 import os
 
 app = Flask(__name__)
-# --- 追加：画像の保存場所をアプリに教える ---
+# --- 霑ｽ蜉・夂判蜒上・菫晏ｭ伜ｴ謇繧偵い繝励Μ縺ｫ謨吶∴繧・---
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# データベースに接続する関数（後で使います）
+# 繝・・繧ｿ繝吶・繧ｹ縺ｫ謗･邯壹☆繧矩未謨ｰ・亥ｾ後〒菴ｿ縺・∪縺呻ｼ・
 def get_db_connection():
     db_path = os.path.join('database', 'food_app.db')
     conn = sqlite3.connect(db_path)
@@ -19,28 +19,28 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     
-    # ① 検索窓（name="q"）に入力された文字を読み取る
+    # 竭 讀懃ｴ｢遯難ｼ・ame="q"・峨↓蜈･蜉帙＆繧後◆譁・ｭ励ｒ隱ｭ縺ｿ蜿悶ｋ
     query = request.args.get('q', '')
 
     if query:
-        # ② 文字が入っている場合：名前にその文字を含む食材だけを探す（LIKE検索）
+        # 竭｡ 譁・ｭ励′蜈･縺｣縺ｦ縺・ｋ蝣ｴ蜷茨ｼ壼錐蜑阪↓縺昴・譁・ｭ励ｒ蜷ｫ繧鬟滓攝縺縺代ｒ謗｢縺呻ｼ・IKE讀懃ｴ｢・・
         ingredients = conn.execute("""
             SELECT * FROM ingredients 
             WHERE is_deleted = 0 AND name LIKE ?
             ORDER BY expiry_date
         """, ('%' + query + '%',)).fetchall()
     else:
-        # ③ 文字が空の場合：今まで通り全部出す
+        # 竭｢ 譁・ｭ励′遨ｺ縺ｮ蝣ｴ蜷茨ｼ壻ｻ翫∪縺ｧ騾壹ｊ蜈ｨ驛ｨ蜃ｺ縺・
         ingredients = conn.execute(
             "SELECT * FROM ingredients WHERE is_deleted = 0 ORDER BY expiry_date"
         ).fetchall()
 
     conn.close()
 
-    # ④ 検索キーワード（query）も一緒にHTMLへ送る（検索窓に文字を残すため）
+    # 竭｣ 讀懃ｴ｢繧ｭ繝ｼ繝ｯ繝ｼ繝会ｼ・uery・峨ｂ荳邱偵↓HTML縺ｸ騾√ｋ・域､懃ｴ｢遯薙↓譁・ｭ励ｒ谿九☆縺溘ａ・・
     return render_template("index.html", ingredients=ingredients, query=query)
 
-# 食材追加（Create：「新規追加」ボタンを本当に動かす
+# 鬟滓攝霑ｽ蜉・・reate・壹梧眠隕剰ｿｽ蜉縲阪・繧ｿ繝ｳ繧呈悽蠖薙↓蜍輔°縺・
 @app.route('/add', methods=['GET', 'POST'])
 def add_ingredient():
 
@@ -104,7 +104,7 @@ def add_ingredient():
 
     return render_template('edit.html')
 
-#編集ボタンを本当に動かす
+#邱ｨ髮・・繧ｿ繝ｳ繧呈悽蠖薙↓蜍輔°縺・
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_ingredient(id):
     conn = get_db_connection()
@@ -149,7 +149,7 @@ def edit_ingredient(id):
 
             upload_id = cursor.lastrowid
 
-        # SQLの UPDATE 文に photo_path を追加
+        # SQL縺ｮ UPDATE 譁・↓ photo_path 繧定ｿｽ蜉
         conn.execute("""
             UPDATE ingredients
             SET name=?, purchase_date=?, expiry_date=?, quantity=?, unit=?, category=?, memo=?, upload_id=?
@@ -163,7 +163,7 @@ def edit_ingredient(id):
     conn.close()
     return render_template('edit.html', ingredient=ingredient)
 
-#削除ルート
+#蜑企勁繝ｫ繝ｼ繝・
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_ingredient(id):
 
@@ -180,7 +180,7 @@ def delete_ingredient(id):
 
     return redirect('/')
 
-# DB接続テスト
+# DB謗･邯壹ユ繧ｹ繝・
 @app.route('/test-db')
 def test_db():
     conn = get_db_connection()
@@ -193,5 +193,6 @@ def test_db():
 
     return str([row["name"] for row in tables])
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
