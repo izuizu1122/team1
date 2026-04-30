@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マイページ - 食材管理アプリ</title>
+    <link rel="stylesheet" href="css/mypage-styles.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <h1 class="logo">🥬 食材管理</h1>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="container mypage-container">
+        <section class="profile-section">
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-info">
+                    <h2 id="userName">ユーザー名</h2>
+                    <p id="userEmail">user@example.com</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 統計情報 -->
+        <section class="stats-section">
+            <div class="stat-card">
+                <h3>登録済み食材</h3>
+                <p class="stat-number" id="totalIngredients">6</p>
+                <span class="stat-label">個</span>
+            </div>
+            <div class="stat-card">
+                <h3>期限が近い</h3>
+                <p class="stat-number" id="warningIngredients">2</p>
+                <span class="stat-label">個</span>
+            </div>
+            <div class="stat-card">
+                <h3>期限切れ</h3>
+                <p class="stat-number" id="expiredIngredients">0</p>
+                <span class="stat-label">個</span>
+            </div>
+        </section>
+
+        <!-- 設定セクション -->
+        <section class="settings-section">
+            <h3>設定</h3>
+            
+            <div class="setting-item">
+                <label for="notificationDays">賞味期限アラート通知（残り何日前）</label>
+                <select id="notificationDays" class="setting-select">
+                    <option value="3">3日前</option>
+                    <option value="5" selected>5日前</option>
+                    <option value="7">7日前</option>
+                    <option value="10">10日前</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label for="theme">テーマ</label>
+                <select id="theme" class="setting-select">
+                    <option value="light" selected>ライト</option>
+                    <option value="dark">ダーク</option>
+                </select>
+            </div>
+
+            <button class="btn-save" id="saveSetting">設定を保存</button>
+        </section>
+
+        <!-- アカウント管理 -->
+        <section class="account-section">
+            <h3>アカウント管理</h3>
+            
+            <button class="btn-secondary" id="changePasswordBtn">パスワード変更</button>
+            <button class="btn-danger" id="deleteAccountBtn">アカウント削除</button>
+        </section>
+
+        <!-- トップページへ戻る -->
+        <div class="footer-link">
+            <a href="index.html">← トップページに戻る</a>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/loading.js"></script>
+    <script src="js/mypage.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# SQLite
+*.db
+*.db-journal
+*.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+
+# 環境ファイル
+.env
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
