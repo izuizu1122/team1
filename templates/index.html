@@ -13,12 +13,9 @@ href="{{ url_for('static', filename='css/styles.css') }}">
 
 <nav class="navbar">
 <div class="navbar-container">
+    <h1 class="logo">🥬 食材管理</h1>
 
-<h1 class="logo">🥬 食材管理</h1>
 
-<a href="/add" class="btn-add">
-＋追加
-</a>
 
 </div>
 </nav>
@@ -117,12 +114,13 @@ href="{{ url_for('static', filename='css/styles.css') }}">
 <input
 id="searchInput"
 type="text"
-name="q"
+name="q"/add
 class="search-input"
 placeholder="食材を検索..."
 value="{{ query }}"
 >
 
+<a href="/add" class="btn-add">＋追加</a>
 <button type="submit" class="btn-search">
 検索
 </button>
